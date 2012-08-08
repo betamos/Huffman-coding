@@ -1,4 +1,3 @@
-#include <stdlib.h>
 
 // A sequence of bits
 // Read from "right to left"

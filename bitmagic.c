@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "bitmagic.h"
 
 bitseq* bs_create(void) {

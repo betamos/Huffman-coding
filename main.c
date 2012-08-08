@@ -5,6 +5,8 @@
 
 typedef unsigned int uint;
 
+//typedef struct {} ;
+
 int main(int argc, char* argv[]) {
   bitseq* bs = bs_create();
   bs_prepend(bs, 1);

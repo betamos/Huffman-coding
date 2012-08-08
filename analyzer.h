@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 #define    BYTE_MAP_SIZE 256
 #define      BUFFER_SIZE 1024

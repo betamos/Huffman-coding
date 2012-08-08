@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "analyzer.h"
 
 // Reads from current position to EOF and returns a stat object
