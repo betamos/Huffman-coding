@@ -5,7 +5,7 @@ bitseq* bs_create(void) {
 }
 
 // Set the leftmost bit
-void bs_prepend(bitseq* seq, bool bit) {
+void bs_prepend(bitseq* seq, char bit) {
   seq->sequence <<= 1;
   seq->sequence |= bit;
   seq->length++;
