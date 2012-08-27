@@ -58,6 +58,9 @@ typedef struct bit_array_t bit_array_t;
 bit_array_t *BitArrayCreate(unsigned int bits);
 void BitArrayDestroy(bit_array_t *ba);
 
+/* metadata functions */
+unsigned int BitArraySize(bit_array_t *ba);
+
 /* debug functions */
 void BitArrayDump(bit_array_t *ba, FILE *outFile);
 
@@ -75,6 +78,7 @@ int BitArrayTestBit(bit_array_t *ba, unsigned int bit);
 
 /* copy functions */
 void BitArrayCopy(bit_array_t *dest, const bit_array_t *src);
+void BitArrayNCopy(bit_array_t *dest, const bit_array_t *src, unsigned int n);
 bit_array_t *BitArrayDuplicate(const bit_array_t *src);
 
 /* logical operations */

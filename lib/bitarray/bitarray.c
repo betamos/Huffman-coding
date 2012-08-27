@@ -169,6 +169,19 @@ void BitArrayDestroy(bit_array_t *ba)
 }
 
 /***************************************************************************
+*   Author     : Didrik Nordström
+*   Function   : BitArraySize
+*   Description: This function returns the size of the bitarray.
+*                This function is an amendment to the original source.
+*   Parameters : ba - pointer to bit array
+*   Effects    : frees memory pointed to by bit array structure.
+*   Returned   : The size of the array in bits
+***************************************************************************/
+unsigned int BitArraySize(bit_array_t *ba) {
+    return ba->numBits;
+}
+
+/***************************************************************************
 *   Function   : BitArrayDump
 *   Description: This function dumps the contents of a bit array to the
 *                specified output stream.  The format of the dump is a
@@ -367,6 +380,42 @@ void BitArrayCopy(bit_array_t *dest, const bit_array_t *src)
     }
 
     if (src->numBits != dest->numBits)
+    {
+        return;         /* source and destination are not the same size */
+    }
+
+    /* copy source to destination */
+    memcpy((void *)(dest->array), (void *)(src->array),
+        BITS_TO_CHARS(src->numBits));
+}
+
+/***************************************************************************
+*   Author     : Didrik Nordström
+*   Function   : BitArrayNCopy
+*   Description: This function copies n bits from the source bit array
+*                into the destination.  If n is greater than the size of
+*                either array, a copy will not take place.
+*                This function is an amendment to the original source.
+*   Parameters : dest - pointer to destination bit array
+*                src - pointer to source bit array
+*                n - number of bits to copy
+*   Effects    : n bits from the source bit array are copied to the
+*                destination bit array.
+*   Returned   : None
+***************************************************************************/
+void BitArrayNCopy(bit_array_t *dest, const bit_array_t *src, unsigned int n)
+{
+    if (src == NULL)
+    {
+        return;         /* no source array */
+    }
+
+    if (dest == NULL)
+    {
+        return;         /* no destination array */
+    }
+
+    if (n > src->numBits || n > dest->numBits)
     {
         return;         /* source and destination are not the same size */
     }
