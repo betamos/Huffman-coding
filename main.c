@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
   bytestats* stats = analyze_file(fp);
   char i = 'A';
   for (; i < 'z'; i++) {
-    printf("%c: %u; ", i, stats->counts[i]);
+    printf("%c: %u; ", i, stats->counts[(int) i]);
   }
   printf("\nfilesize: %u\n", stats->totalcount);
   //printf("unique bytes: %u\n", stats->uniquebytes & 0xFF);
@@ -69,7 +69,8 @@ int main(int argc, char* argv[]) {
   unsigned char buffer[BUFFER_SIZE], ch;
   unsigned int i2, c; // Iterator, bytes read counter
   rewind(fp);
-  while (c = fread(buffer, sizeof(char), BUFFER_SIZE, fp)) {
+  BitFilePutUint32(0x12345678, bft);
+  while ((c = fread(buffer, sizeof(char), BUFFER_SIZE, fp))) {
     for (i2 = 0; i2 < c; i2++) {
       fprintf(stderr,  "%c", ch);
       ch = buffer[i2];
@@ -80,8 +81,15 @@ int main(int argc, char* argv[]) {
   BitFileClose(bft);
   printf("Success!\n");
 
+  // Read
+  bft = BitFileOpen("compressed.lol", BF_READ);
+  uint v = BitFileGetUint32(bft);
+  fprintf(stderr, "Read %X\n", v);
+  BitFileClose(bft);
+
   fclose(fp);
   fprintf(stderr, "Queue dårå!\n");
+  return 0;
 }
 
 // Build a tree of a bytestats struct

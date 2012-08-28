@@ -13,7 +13,7 @@ bytestats* analyze_file(FILE* fp) {
   // Initialize buffer
   unsigned char buffer[BUFFER_SIZE];
   unsigned int i, c; // Iterator, bytes read counter
-  while (c = fread(buffer, sizeof(char), BUFFER_SIZE, fp)) {
+  while ((c = fread(buffer, sizeof(char), BUFFER_SIZE, fp))) {
     stats->totalcount += c;
     for (i = 0; i < c; i++) {
       if (stats->counts[buffer[i]]++ == 0)

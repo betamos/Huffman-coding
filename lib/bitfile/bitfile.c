@@ -483,6 +483,29 @@ int BitFileGetChar(bit_file_t *stream)
 }
 
 /***************************************************************************
+*   Author     : Didrik Nordström
+*   Function   : BitFileGetUint32
+*   Description: This function returns the next uint32 from the file passed as
+*                a parameter, in big endian format.
+*   Parameters : stream - pointer to bit file stream to read from
+*   Effects    : Reads next uint32 from file and updates buffer accordingly.
+*   Returned   : The next uint32, no EOF check is performed
+***************************************************************************/
+unsigned int BitFileGetUint32(bit_file_t *stream)
+{
+    unsigned int ret = 0, i;
+    if (stream == NULL)
+    {
+        return 0;
+    }
+    for (i = 0; i < 4; i++) {
+        ret <<= 8;
+        ret |= (unsigned int) BitFileGetChar(stream);
+    }
+    return ret;
+}
+
+/***************************************************************************
 *   Function   : BitFilePutChar
 *   Description: This function writes the byte passed as a parameter to the
 *                file passed a parameter.
@@ -521,6 +544,29 @@ int BitFilePutChar(const int c, bit_file_t *stream)
     }
 
     return tmp;
+}
+
+/***************************************************************************
+*   Function   : BitFilePutUint32
+*   Description: This function writes the uint to the stream in big endian
+*                format. 4 bytes are written.
+*   Parameters : n - the int to be written
+*                stream - pointer to bit file stream to write to
+*   Effects    : Writes an unsigned 32 bit integer to the file and updates
+*                buffer accordingly.
+***************************************************************************/
+void BitFilePutUint32(const unsigned int n, bit_file_t *stream)
+{
+    int tmp = n;
+    if (stream == NULL)
+    {
+        return;
+    }
+    int i;
+    for (i = 3; i >= 0; i--) {
+        tmp = n >> i*8;
+        BitFilePutChar(tmp, stream);
+    }
 }
 
 /***************************************************************************

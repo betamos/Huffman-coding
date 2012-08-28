@@ -104,7 +104,9 @@ int BitFileFlushOutput(bit_file_t *stream, const unsigned char onesFill);
 
 /* get/put character */
 int BitFileGetChar(bit_file_t *stream);
+unsigned int BitFileGetUint32(bit_file_t *stream);
 int BitFilePutChar(const int c, bit_file_t *stream);
+void BitFilePutUint32(const unsigned int n, bit_file_t *stream);
 
 /* get/put single bit */
 int BitFileGetBit(bit_file_t *stream);
