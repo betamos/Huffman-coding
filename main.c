@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
   unsigned char buffer[BUFFER_SIZE], ch;
   unsigned int i2, c; // Iterator, bytes read counter
   rewind(fp);
-  BitFilePutUint32(0x12345678, bft);
+  BitFilePutUint32(stats->totalcount, bft);
   while ((c = fread(buffer, sizeof(char), BUFFER_SIZE, fp))) {
     for (i2 = 0; i2 < c; i2++) {
       fprintf(stderr,  "%c", ch);
@@ -79,12 +79,22 @@ int main(int argc, char* argv[]) {
     }
   }
   BitFileClose(bft);
-  printf("Success!\n");
+  printf("Success! Reading file again:\n");
 
-  // Read
+  // Read compressed
   bft = BitFileOpen("compressed.lol", BF_READ);
-  uint v = BitFileGetUint32(bft);
-  fprintf(stderr, "Read %X\n", v);
+  uint bytesleft;
+  tree_node *current_node = t;
+  for (bytesleft = BitFileGetUint32(bft); bytesleft > 0;) {
+    current_node = BitFileGetBit(bft) ? current_node->right : current_node->left;
+    if (current_node->left == NULL) {
+      // Content node
+      fprintf(stderr, "%c", current_node->content);
+      current_node = t; // Reset to root
+      bytesleft--;
+    }
+  }
+  fprintf(stderr, "\nDone!\n");
   BitFileClose(bft);
 
   fclose(fp);
