@@ -29,16 +29,11 @@ int tree_is_leaf(tree_node *node);
 void tree_leaf_dump(tree_node* tree);
 
 
-// CHARCODE, HUFFMAN META
+// HUFFMAN META
 
 typedef struct {
-  unsigned char character;
-  bit_array_t *sequence;
-} charcode;
-
-typedef struct {
-  unsigned int filesize;
-  charcode* bytemap[BYTE_MAP_SIZE];
+  unsigned int bytecount, uniquebytes;
+  bit_array_t* bytemap[BYTE_MAP_SIZE];
 } huffman_meta;
 
 #endif
