@@ -1,23 +1,32 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "tree.h"
-// Immutable trees
+#include "common.h"
 
-tree_node* tree_make_subtree(tree_node* left, tree_node* right) {
+
+//                 .:  BINARY TREES  :.
+
+
+
+tree_node* tree_create_branch(tree_node* a, tree_node* b) {
   tree_node* new = malloc(sizeof(tree_node));
-  new->left = left;
-  new->right = right;
-  new->count = left->count + right->count;
+  new->left = a;
+  new->right = b;
+  new->count = a->count + b->count;
   return new;
 }
 
-tree_node* tree_make_leaf(char content, unsigned int count) {
+tree_node* tree_create_leaf(unsigned char content, unsigned int count) {
   tree_node* new = malloc(sizeof(tree_node));
   new->content = content;
   new->count = count;
   new->left = NULL;
   new->right = NULL;
   return new;
+}
+
+// Determine if leaf
+int tree_is_leaf(tree_node *node) {
+  return node->left == NULL;
 }
 
 // Destroys and deallocates memory for the subtree
@@ -27,12 +36,6 @@ void tree_destroy(tree_node* subtree) {
     tree_destroy(subtree->right);
     free(subtree);
   }
-}
-
-void _tree_leaf_dump(tree_node* tree, int depth);
-
-void tree_leaf_dump(tree_node* tree) {
-  _tree_leaf_dump(tree, -1);
 }
 
 void _tree_leaf_dump(tree_node* tree, int depth) {
@@ -51,3 +54,10 @@ void _tree_leaf_dump(tree_node* tree, int depth) {
     _tree_leaf_dump(tree->left, depth);
   }
 }
+
+void tree_leaf_dump(tree_node* tree) {
+  _tree_leaf_dump(tree, -1);
+}
+
+
+//                 .:  BYTE MAPS  :.
