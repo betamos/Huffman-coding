@@ -11,7 +11,8 @@ tree_node* tree_create_branch(tree_node* a, tree_node* b) {
   tree_node* new = malloc(sizeof(tree_node));
   new->left = a;
   new->right = b;
-  new->count = a->count + b->count;
+  new->count = (a != NULL) ? a->count : 0;
+  new->count += (b != NULL) ? b->count : 0;
   return new;
 }
 
