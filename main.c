@@ -9,22 +9,10 @@
 
 typedef unsigned int uint;
 
-
+void compress(const char *in, const char *out);
 
 int main(int argc, char* argv[]) {
-  //int i;
-  bit_file_t *original = BitFileOpen("test.txt", BF_READ);
-  compress_bytestats *stats = compress_fanalyze_original(original);
-  tree_node* tree = compress_bytestats2tree(stats);
-  huffman_meta metadata;
-  bzero(metadata.bytemap, sizeof(bit_array_t *) * BYTE_MAP_SIZE);
-  compress_tree2bytemap(metadata.bytemap, tree);
-  metadata.bytecount = stats->totalcount;
-  metadata.uniquecount = stats->uniquebytes;
-  bit_file_t *compressed = BitFileOpen("compressed.lol", BF_WRITE);
-  fprintf(stderr, "LOL\n");
-  tree_leaf_dump(tree);
-  compress_fwrite_meta(compressed, &metadata);
+  compress("test.txt", "compressed.lol");
   /*
   FILE *fp = fopen("test.txt", "r");
   if (fp == NULL) {
@@ -94,9 +82,25 @@ int main(int argc, char* argv[]) {
   return 0;
 }
 
-
-
-
-
-
+void compress(const char *in, const char *out) {
+  bit_file_t *original, *compressed;
+  compress_bytestats *stats;
+  tree_node* tree;
+  huffman_meta metadata;
+  const char *original_filename = in;
+  original = BitFileOpen(original_filename, BF_READ);
+  stats = compress_fanalyze_original(original);
+  BitFileClose(original);
+  tree = compress_bytestats2tree(stats);
+  bzero(metadata.bytemap, sizeof(bit_array_t *) * BYTE_MAP_SIZE);
+  compress_tree2bytemap(metadata.bytemap, tree);
+  metadata.bytecount = stats->totalcount;
+  metadata.uniquecount = stats->uniquebytes;
+  compressed = BitFileOpen(out, BF_WRITE);
+  compress_fwrite_meta(compressed, &metadata);
+  original = BitFileOpen(original_filename, BF_READ);
+  compress_fcompress(original, compressed, metadata.bytemap);
+  BitFileClose(original);
+  BitFileClose(compressed);
+}
 

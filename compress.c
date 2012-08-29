@@ -30,14 +30,12 @@ int _compare(const void *a, const void *b) {
 // Build a tree of a bytestats struct
 // Presumes stats->uniquebytes >= 1
 tree_node* compress_bytestats2tree(compress_bytestats *stats) {
-  fprintf(stderr, "Creating pqueue with capacity %i\n", (int)stats->uniquebytes);
   void* pq = pqueue_new(_compare, (size_t) stats->uniquebytes);
   tree_node *leaf, *leaf2;
   int i;
   for (i = 0; i < BYTE_MAP_SIZE; i++) {
     if (stats->counts[i] > 0) {
       leaf = tree_create_leaf(i, stats->counts[i]);
-      fprintf(stderr, "Enqueueing %c with count %u\n", i, leaf->count);
       pqueue_enqueue(pq, (void *) leaf);
     }
   }
@@ -46,7 +44,6 @@ tree_node* compress_bytestats2tree(compress_bytestats *stats) {
     leaf = (tree_node *) pqueue_dequeue(pq);
     leaf2 = (tree_node *) pqueue_dequeue(pq);
     pqueue_enqueue(pq, (void *) tree_create_branch(leaf, leaf2));
-    fprintf(stderr, "Made a subtree of %c and %c\n", leaf->content, leaf2->content);
   }
   leaf = (tree_node *) pqueue_dequeue(pq);
   pqueue_delete(pq);
@@ -82,7 +79,6 @@ void compress_tree2bytemap(bit_array_t **bytemap, const tree_node *tree) {
 void compress_fwrite_meta(bit_file_t *outstream, huffman_meta *meta) {
   BitFilePutUint32(meta->bytecount, outstream);
   BitFilePutUint32(meta->uniquecount, outstream);
-  fprintf(stderr, "LOL igen\n");
   int i;
   unsigned int size;
   bit_array_t *ba;
@@ -93,6 +89,23 @@ void compress_fwrite_meta(bit_file_t *outstream, huffman_meta *meta) {
       BitFilePutChar((int) size, outstream);
       BitFilePutBits(outstream, BitArrayGetBits(ba), size);
     }
+  }
+}
+
+void compress_fcompress(
+  bit_file_t *original,
+  bit_file_t *compressed,
+  bit_array_t **bytemap)
+{
+  int current_byte; // Current byte to compress
+  bit_array_t *current_bit_array;
+  void *current_bitseq;
+  unsigned int current_bitseq_len;
+  while (EOF != (current_byte = BitFileGetChar(original))) {
+    current_bit_array = bytemap[current_byte];
+    current_bitseq = BitArrayGetBits(current_bit_array);
+    current_bitseq_len = BitArraySize(current_bit_array);
+    BitFilePutBits(compressed, current_bitseq, current_bitseq_len);
   }
 }
 
