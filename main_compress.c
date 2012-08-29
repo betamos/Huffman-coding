@@ -14,7 +14,7 @@ void compress(const char *in, const char *out);
 int main(int argc, char* argv[]) {
   char *in, *out, *ending = ".hcf";
   if (argc < 2) {
-    fprintf(stderr, "No infile argument");
+    fprintf(stderr, "No infile argument\n");
     return 1;
   }
   in = argv[1];

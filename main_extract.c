@@ -14,7 +14,7 @@ void extract(const char *in, const char *out);
 int main(int argc, char* argv[]) {
   char *in, *out;
   if (argc < 3) {
-    fprintf(stderr, "No in/outfile argument");
+    fprintf(stderr, "No in/outfile argument\n");
     return 1;
   }
   in = argv[1];
