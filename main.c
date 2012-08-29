@@ -13,6 +13,19 @@ void compress(const char *in, const char *out);
 void extract(const char *in, const char *out);
 
 int main(int argc, char* argv[]) {
+  char *in, *out, *ending = ".hcf";
+  if (argc < 2) {
+    fprintf(stderr, "No infile argument");
+    return;
+  }
+  in = argv[1];
+  if (argc >= 3)
+    out = argv[2];
+  else {
+    out = malloc(strlen(in) + strlen(ending) + 1);
+    strcpy(out, in);
+    strcat(out, ending);
+  }
   const char *in = "lipsum", *out = "compressed.lol";
   compress(in, out);
   extract(out, "bacon");
@@ -52,5 +65,7 @@ void extract(const char *in, const char *out) {
   tree = extract_fread_bytemap(compressed, uniquebytes);
   extracted = BitFileOpen(out, BF_WRITE);
   extract_fextract(compressed, extracted, tree, bytecount);
+  BitFileClose(compressed);
+  BitFileClose(extracted);
 }
 
