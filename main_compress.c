@@ -10,13 +10,12 @@
 typedef unsigned int uint;
 
 void compress(const char *in, const char *out);
-void extract(const char *in, const char *out);
 
 int main(int argc, char* argv[]) {
   char *in, *out, *ending = ".hcf";
   if (argc < 2) {
     fprintf(stderr, "No infile argument");
-    return;
+    return 1;
   }
   in = argv[1];
   if (argc >= 3)
@@ -26,13 +25,8 @@ int main(int argc, char* argv[]) {
     strcpy(out, in);
     strcat(out, ending);
   }
-  const char *in = "lipsum", *out = "compressed.lol";
   compress(in, out);
-  extract(out, "bacon");
-  
-
   printf("Compressed %s to %s\n", in, out);
-
   return 0;
 }
 
@@ -54,18 +48,3 @@ void compress(const char *in, const char *out) {
   BitFileClose(original);
   BitFileClose(compressed);
 }
-
-void extract(const char *in, const char *out) {
-  bit_file_t *compressed, *extracted;
-  unsigned int bytecount;
-  int uniquebytes;
-  tree_node *tree;
-  compressed = BitFileOpen(in, BF_READ);
-  extract_fread_meta(compressed, &bytecount, &uniquebytes);
-  tree = extract_fread_bytemap(compressed, uniquebytes);
-  extracted = BitFileOpen(out, BF_WRITE);
-  extract_fextract(compressed, extracted, tree, bytecount);
-  BitFileClose(compressed);
-  BitFileClose(extracted);
-}
-
