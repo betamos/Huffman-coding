@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lib/bitfile/bitfile.h"
+#include "lib/bitarray/bitarray.h"
 #include "compress.h"
 #include "common.h"
 
@@ -41,20 +42,19 @@ void compress(const char *in, const char *out) {
   bit_file_t *original, *compressed;
   compress_bytestats *stats;
   tree_node* tree;
-  huffman_meta metadata;
+  bit_array_t *bytemap[256] = {NULL};
+  //bzero(bytemap, sizeof(bit_array_t *) * BYTE_MAP_SIZE);
   const char *original_filename = in;
   original = BitFileOpen(original_filename, BF_READ);
   stats = compress_fanalyze_original(original);
   BitFileClose(original);
   tree = compress_bytestats2tree(stats);
-  bzero(metadata.bytemap, sizeof(bit_array_t *) * BYTE_MAP_SIZE);
-  compress_tree2bytemap(metadata.bytemap, tree);
-  metadata.bytecount = stats->totalcount;
-  metadata.uniquecount = stats->uniquebytes;
+  compress_tree2bytemap(bytemap, tree);
   compressed = BitFileOpen(out, BF_WRITE);
-  compress_fwrite_meta(compressed, &metadata);
+  compress_fwrite_meta(compressed, stats->totalcount, stats->uniquebytes);
+  compress_fwrite_bytemap(compressed, bytemap);
   original = BitFileOpen(original_filename, BF_READ);
-  compress_fcompress(original, compressed, metadata.bytemap);
+  compress_fwrite_data(original, compressed, bytemap);
   BitFileClose(original);
   BitFileClose(compressed);
 }

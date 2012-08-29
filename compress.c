@@ -76,23 +76,25 @@ void compress_tree2bytemap(bit_array_t **bytemap, const tree_node *tree) {
   _tree2bytemap(bytemap, tree, NULL);
 }
 
-void compress_fwrite_meta(bit_file_t *outstream, huffman_meta *meta) {
-  BitFilePutUint32(meta->bytecount, outstream);
-  BitFilePutUint32(meta->uniquecount, outstream);
-  int i;
-  unsigned int size;
+void compress_fwrite_meta(bit_file_t *outstream, unsigned int bytecount, unsigned int uniquecount) {
+  BitFilePutUint32(bytecount, outstream);
+  BitFilePutUint32(uniquecount, outstream);
+}
+
+void compress_fwrite_bytemap(bit_file_t *outstream, bit_array_t **bytemap) {
+  int i, size;
   bit_array_t *ba;
   for (i = 0; i < BYTE_MAP_SIZE; i++) {
-    if ((ba = meta->bytemap[i])) {
+    if ((ba = bytemap[i])) {
       BitFilePutChar(i, outstream);
       size = BitArraySize(ba);
-      BitFilePutChar((int) size, outstream);
+      BitFilePutChar(size, outstream);
       BitFilePutBits(outstream, BitArrayGetBits(ba), size);
     }
   }
-}
+};
 
-void compress_fcompress(
+void compress_fwrite_data(
   bit_file_t *original,
   bit_file_t *compressed,
   bit_array_t **bytemap)

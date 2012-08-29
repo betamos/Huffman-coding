@@ -28,15 +28,4 @@ int tree_is_leaf(tree_node *node);
 // Dump the tree
 void tree_leaf_dump(tree_node* tree);
 
-
-// HUFFMAN META
-
-typedef struct {
-  unsigned int bytecount;
-  unsigned int uniquecount;
-  bit_array_t* bytemap[BYTE_MAP_SIZE];
-} huffman_meta;
-
-
-
 #endif

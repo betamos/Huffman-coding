@@ -16,6 +16,8 @@ tree_node* compress_bytestats2tree(compress_bytestats *stats);
 
 void compress_tree2bytemap(bit_array_t **bytemap, const tree_node *tree);
 
-void compress_fwrite_meta(bit_file_t *outstream, huffman_meta *meta);
+void compress_fwrite_meta(bit_file_t *outstream, unsigned int bytecount, unsigned int uniquecount);
 
-void compress_fcompress(bit_file_t *original, bit_file_t *compressed, bit_array_t **bytemap);
+void compress_fwrite_bytemap(bit_file_t *outstream, bit_array_t **bytemap);
+
+void compress_fwrite_data(bit_file_t *original, bit_file_t *compressed, bit_array_t **bytemap);
