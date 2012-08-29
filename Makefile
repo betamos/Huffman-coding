@@ -3,8 +3,8 @@ all:	compress extract
 
 compress:	main_compress.o compress.o common.o bitarray.o bitfile.o pqueue.o
 	$(CC) $(CFLAGS) -o compress main_compress.o compress.o common.o bitarray.o bitfile.o pqueue.o
-extract:	main_extract.o extract.o common.o bitarray.o bitfile.o pqueue.o 
-	$(CC) $(CFLAGS) -o extract main_extract.o extract.o common.o bitarray.o bitfile.o pqueue.o
+extract:	main_extract.o extract.o common.o bitfile.o pqueue.o 
+	$(CC) $(CFLAGS) -o extract main_extract.o extract.o common.o bitfile.o pqueue.o
 
 # Main files
 main_compress.o:	main_compress.c

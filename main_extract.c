@@ -1,10 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "lib/bitfile/bitfile.h"
-#include "lib/bitarray/bitarray.h"
 #include "common.h"
-#include "compress.h"
 #include "extract.h"
 
 typedef unsigned int uint;

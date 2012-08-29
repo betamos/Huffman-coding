@@ -5,7 +5,6 @@
 #include "lib/bitarray/bitarray.h"
 #include "common.h"
 #include "compress.h"
-#include "extract.h"
 
 typedef unsigned int uint;
 

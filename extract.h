@@ -1,5 +1,4 @@
 #include "lib/bitfile/bitfile.h"
-#include "lib/bitarray/bitarray.h"
 #include "common.h"
 
 void extract_fread_meta(bit_file_t *compressed, unsigned int *bytecount, int *uniquebytes);
