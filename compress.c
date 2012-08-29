@@ -6,29 +6,16 @@
 #include "lib/bitarray/bitarray.h"
 #include "lib/bitfile/bitfile.h"
 
-// Statistics about the bytes in an analyzed file
-struct compress_bytestats {
-  unsigned int totalcount; // Filesize in bytes
-  unsigned char uniquebytes; // Unique byte permutations, from 1 to 256
-  unsigned int counts[BYTE_MAP_SIZE]; // Counts per byte
-};
-
-// Reads entire file contents, from 0 to EOF and returns a stat object
+// Reads entire file contents and returns a stat object
 // The file cursor may be manipulated
-// TODO: rewrite to bitfile_t
-compress_bytestats* compress_fanalyze_original(FILE* instream) {
-  rewind(instream);
+compress_bytestats* compress_fanalyze_original(bit_file_t* instream) {
   // Allocate stat object and fill with zeros
   compress_bytestats* stats = (compress_bytestats*) calloc(1, sizeof(compress_bytestats));
-  // Initialize buffer
-  unsigned char buffer[BUFFER_SIZE];
-  unsigned int i, c; // Iterator, bytes read counter
-  while ((c = fread(buffer, sizeof(char), BUFFER_SIZE, instream))) {
-    stats->totalcount += c;
-    for (i = 0; i < c; i++) {
-      if (stats->counts[buffer[i]]++ == 0)
-        stats->uniquebytes++;
-    }
+  int c; // Iterator, bytes read counter
+  while (EOF != (c = BitFileGetChar(instream))) {
+    stats->totalcount ++;
+    if (stats->counts[c]++ == 0)
+      stats->uniquebytes++;
   }
   return stats;
 }
@@ -95,6 +82,7 @@ void compress_tree2bytemap(bit_array_t **bytemap, const tree_node *tree) {
 void compress_fwrite_meta(bit_file_t *outstream, huffman_meta *meta) {
   BitFilePutUint32(meta->bytecount, outstream);
   BitFilePutUint32(meta->uniquecount, outstream);
+  fprintf(stderr, "LOL igen\n");
   int i;
   unsigned int size;
   bit_array_t *ba;

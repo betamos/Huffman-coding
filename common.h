@@ -37,4 +37,6 @@ typedef struct {
   bit_array_t* bytemap[BYTE_MAP_SIZE];
 } huffman_meta;
 
+
+
 #endif

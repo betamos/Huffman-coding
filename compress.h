@@ -2,14 +2,18 @@
 #include "common.h"
 #include "lib/bitfile/bitfile.h"
 
-struct compress_bytestats;
-typedef struct compress_bytestats compress_bytestats;
+// Statistics about the bytes in an analyzed file
+typedef struct compress_bytestats {
+  unsigned int totalcount; // Filesize in bytes
+  unsigned char uniquebytes; // Unique byte permutations, from 1 to 256
+  unsigned int counts[BYTE_MAP_SIZE]; // Counts per byte
+} compress_bytestats;
 
 // Analyzes file for 
-compress_bytestats* compress_fanalyze_original(FILE* instream);
+compress_bytestats* compress_fanalyze_original(bit_file_t* instream);
 
 tree_node* compress_bytestats2tree(compress_bytestats *stats);
 
-void compress_tree2bytemap(bit_array_t **table, const tree_node *tree);
+void compress_tree2bytemap(bit_array_t **bytemap, const tree_node *tree);
 
 void compress_fwrite_meta(bit_file_t *outstream, huffman_meta *meta);

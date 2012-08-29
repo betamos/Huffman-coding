@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "lib/bitfile/bitfile.h"
 #include "lib/bitarray/bitarray.h"
 #include "lib/pqueue/pqueue.h"
@@ -11,6 +12,19 @@ typedef unsigned int uint;
 
 
 int main(int argc, char* argv[]) {
+  //int i;
+  bit_file_t *original = BitFileOpen("test.txt", BF_READ);
+  compress_bytestats *stats = compress_fanalyze_original(original);
+  tree_node* tree = compress_bytestats2tree(stats);
+  huffman_meta metadata;
+  bzero(metadata.bytemap, sizeof(bit_array_t *) * BYTE_MAP_SIZE);
+  compress_tree2bytemap(metadata.bytemap, tree);
+  metadata.bytecount = stats->totalcount;
+  metadata.uniquecount = stats->uniquebytes;
+  bit_file_t *compressed = BitFileOpen("compressed.lol", BF_WRITE);
+  fprintf(stderr, "LOL\n");
+  tree_leaf_dump(tree);
+  compress_fwrite_meta(compressed, &metadata);
   /*
   FILE *fp = fopen("test.txt", "r");
   if (fp == NULL) {
