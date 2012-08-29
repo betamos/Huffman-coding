@@ -3,38 +3,23 @@
 #include <string.h>
 #include "lib/bitfile/bitfile.h"
 #include "lib/bitarray/bitarray.h"
-#include "compress.h"
 #include "common.h"
+#include "compress.h"
+#include "extract.h"
 
 typedef unsigned int uint;
 
 void compress(const char *in, const char *out);
+void extract(const char *in, const char *out);
 
 int main(int argc, char* argv[]) {
   const char *in = "lipsum", *out = "compressed.lol";
   compress(in, out);
+  extract(out, "");
   
 
   printf("Compressed %s to %s\n", in, out);
 
-  // Read compressed
-  /*bft = BitFileOpen("compressed.lol", BF_READ);
-  uint bytesleft;
-  tree_node *current_node = t;
-  for (bytesleft = BitFileGetUint32(bft); bytesleft > 0;) {
-    current_node = BitFileGetBit(bft) ? current_node->right : current_node->left;
-    if (current_node->left == NULL) {
-      // Content node
-      fprintf(stderr, "%c", current_node->content);
-      current_node = t; // Reset to root
-      bytesleft--;
-    }
-  }
-  fprintf(stderr, "\nDone!\n");
-  BitFileClose(bft);
-
-  fclose(fp);
-  fprintf(stderr, "Queue dårå!\n");*/
   return 0;
 }
 
@@ -43,9 +28,7 @@ void compress(const char *in, const char *out) {
   compress_bytestats *stats;
   tree_node* tree;
   bit_array_t *bytemap[256] = {NULL};
-  //bzero(bytemap, sizeof(bit_array_t *) * BYTE_MAP_SIZE);
-  const char *original_filename = in;
-  original = BitFileOpen(original_filename, BF_READ);
+  original = BitFileOpen(in, BF_READ);
   stats = compress_fanalyze_original(original);
   BitFileClose(original);
   tree = compress_bytestats2tree(stats);
@@ -53,9 +36,21 @@ void compress(const char *in, const char *out) {
   compressed = BitFileOpen(out, BF_WRITE);
   compress_fwrite_meta(compressed, stats->totalcount, stats->uniquebytes);
   compress_fwrite_bytemap(compressed, bytemap);
-  original = BitFileOpen(original_filename, BF_READ);
+  original = BitFileOpen(in, BF_READ);
   compress_fwrite_data(original, compressed, bytemap);
   BitFileClose(original);
   BitFileClose(compressed);
+}
+
+void extract(const char *in, const char *out) {
+  bit_file_t *compressed;
+  unsigned int bytecount;
+  int uniquebytes;
+  tree_node *tree;
+  compressed = BitFileOpen(in, BF_READ);
+  extract_fread_meta(compressed, &bytecount, &uniquebytes);
+  fprintf(stderr, "Bytecount: %i, Uniques: %i\n", bytecount, uniquebytes);
+  tree = extract_fread_bytemap(compressed, uniquebytes);
+  tree_leaf_dump(tree);
 }
 

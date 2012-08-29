@@ -1,10 +1,9 @@
-
-#include "common.h"
 #include "lib/bitfile/bitfile.h"
 #include "lib/bitarray/bitarray.h"
+#include "common.h"
 
-tree_node *extract_fread_meta(bit_file_h *compressed, huffman_meta* meta);
+void extract_fread_meta(bit_file_t *compressed, unsigned int *bytecount, int *uniquebytes);
 
-tree_node* extract_bytemap2tree(bit_array **bytemap);
+tree_node *extract_fread_bytemap(bit_file_t *compressed, int uniquebytes);
 
-void extract_fextract(bit_file_h *compressed, bit_file_h *extracted, tree_node* tree);
+void extract_fextract(bit_file_t *compressed, bit_file_t *extracted, tree_node* tree);
