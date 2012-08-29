@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "lib/bitfile/bitfile.h"
-#include "lib/bitarray/bitarray.h"
-#include "lib/pqueue/pqueue.h"
 #include "compress.h"
 #include "common.h"
 
