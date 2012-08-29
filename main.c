@@ -15,7 +15,7 @@ void extract(const char *in, const char *out);
 int main(int argc, char* argv[]) {
   const char *in = "lipsum", *out = "compressed.lol";
   compress(in, out);
-  extract(out, "");
+  extract(out, "bacon");
   
 
   printf("Compressed %s to %s\n", in, out);
@@ -43,14 +43,14 @@ void compress(const char *in, const char *out) {
 }
 
 void extract(const char *in, const char *out) {
-  bit_file_t *compressed;
+  bit_file_t *compressed, *extracted;
   unsigned int bytecount;
   int uniquebytes;
   tree_node *tree;
   compressed = BitFileOpen(in, BF_READ);
   extract_fread_meta(compressed, &bytecount, &uniquebytes);
-  fprintf(stderr, "Bytecount: %i, Uniques: %i\n", bytecount, uniquebytes);
   tree = extract_fread_bytemap(compressed, uniquebytes);
-  tree_leaf_dump(tree);
+  extracted = BitFileOpen(out, BF_WRITE);
+  extract_fextract(compressed, extracted, tree, bytecount);
 }
 

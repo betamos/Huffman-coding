@@ -13,7 +13,6 @@ tree_node *extract_fread_bytemap(bit_file_t *compressed, int uniquebytes) {
   for (i = 0; i < uniquebytes; i++) {
     c = BitFileGetChar(compressed);
     size = BitFileGetChar(compressed);
-    fprintf(stderr, "%c with size %i\n", c, size);
     current = root;
     for (j = 0; j < size; j++) {
       next = BitFileGetBit(compressed) ? &current->right : &current->left;
@@ -24,4 +23,17 @@ tree_node *extract_fread_bytemap(bit_file_t *compressed, int uniquebytes) {
     }
   }
   return root;
+}
+
+void extract_fextract(bit_file_t *compressed, bit_file_t *extracted, tree_node* root, unsigned int bytecount) {
+  unsigned int bytesread = 0;
+  tree_node *current = root;
+  while (bytesread < bytecount) {
+    current = BitFileGetBit(compressed) ? current->right : current->left;
+    if (tree_is_leaf(current)) {
+      BitFilePutChar(current->content, extracted);
+      current = root;
+      bytesread++;
+    }
+  }
 }
