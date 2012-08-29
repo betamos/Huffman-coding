@@ -3,6 +3,7 @@
 #include "compress.h"
 #include "common.h"
 #include "lib/pqueue/pqueue.h"
+#include "lib/bitarray/bitarray.h"
 #include "lib/bitfile/bitfile.h"
 
 // Statistics about the bytes in an analyzed file
@@ -91,17 +92,17 @@ void compress_tree2bytemap(bit_array_t **bytemap, const tree_node *tree) {
   _tree2bytemap(bytemap, tree, NULL);
 }
 
-void compress_fwrite_meta(bitfile_t *outstream, huffman_meta *meta) {
+void compress_fwrite_meta(bit_file_t *outstream, huffman_meta *meta) {
   BitFilePutUint32(meta->bytecount, outstream);
   BitFilePutUint32(meta->uniquecount, outstream);
   int i;
   unsigned int size;
   bit_array_t *ba;
   for (i = 0; i < BYTE_MAP_SIZE; i++) {
-    if (ba = meta->bytemap[i]) {
-      BitFilePutChar(outstream, i);
+    if ((ba = meta->bytemap[i])) {
+      BitFilePutChar(i, outstream);
       size = BitArraySize(ba);
-      BitFilePutChar(outstream, (int) size);
+      BitFilePutChar((int) size, outstream);
       BitFilePutBits(outstream, BitArrayGetBits(ba), size);
     }
   }

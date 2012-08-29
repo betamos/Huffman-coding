@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "common.h"
+#include "lib/bitfile/bitfile.h"
 
 struct compress_bytestats;
 typedef struct compress_bytestats compress_bytestats;
@@ -11,4 +12,4 @@ tree_node* compress_bytestats2tree(compress_bytestats *stats);
 
 void compress_tree2bytemap(bit_array_t **table, const tree_node *tree);
 
-int compress_fwrite_meta(FILE *outstream, huffman_meta *meta);
+void compress_fwrite_meta(bit_file_t *outstream, huffman_meta *meta);
